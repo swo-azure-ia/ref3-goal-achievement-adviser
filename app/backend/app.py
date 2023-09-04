@@ -37,17 +37,18 @@ blob_container = blob_client.get_container_client(AZURE_STORAGE_CONTAINER)
 
 # Redis
 REDIS_NAME = os.environ["REDIS_NAME"]
-REDIS_KEY = os.environ["REDIS_KEY"]
+# REDIS_KEY = os.environ["REDIS_KEY"]
 REDIS_INDEX_NAME = os.environ.get("REDIS_INDEX_NAME")
 REDIS_INDEX_CATEGORY = os.environ.get("REDIS_INDEX_CATEGORY")
-redis_client = StrictRedis(
-    host=REDIS_NAME,
-    port=10000,
-    password=REDIS_KEY,
-    ssl=True,
-    ssl_cert_reqs=None,
-    decode_responses=True,
-)
+# redis_client = StrictRedis(
+#     host=REDIS_NAME,
+#     port=10000,
+#     password=REDIS_KEY,
+#     ssl=True,
+#     ssl_cert_reqs=None,
+#     decode_responses=True,
+# )
+redis_client = StrictRedis(host=REDIS_NAME, port=6379)
 redis_index_name = REDIS_INDEX_CATEGORY + "_" + REDIS_INDEX_NAME
 
 # Azure OpenAI
