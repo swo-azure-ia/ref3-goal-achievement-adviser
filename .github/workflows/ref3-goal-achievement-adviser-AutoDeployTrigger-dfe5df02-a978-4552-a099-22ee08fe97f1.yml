@@ -4,19 +4,18 @@ name: Trigger auto deployment for ref3-goal-achievement-adviser
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ main ]
+    branches: [main]
     paths:
-    - 'app/**'
-    - '.github/workflows/ref3-goal-achievement-adviser-AutoDeployTrigger-dfe5df02-a978-4552-a099-22ee08fe97f1.yml'
+      - "app/**"
+      - ".github/workflows/ref3-goal-achievement-adviser-AutoDeployTrigger-dfe5df02-a978-4552-a099-22ee08fe97f1.yml"
 
-  # Allow mannually trigger 
-  workflow_dispatch:      
+  # Allow mannually trigger
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
       id-token: write #This is required for requesting the OIDC JWT Token
 
     steps:
@@ -33,7 +32,7 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}/app 
+          appSourcePath: ${{ github.workspace }}/app
           registryUrl: swoaidemoregistry.azurecr.io
           registryUsername: ${{ secrets.REF3GOALACHIEVEMENTADVISER_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.REF3GOALACHIEVEMENTADVISER_REGISTRY_PASSWORD }}
@@ -41,5 +40,4 @@ jobs:
           resourceGroup: aoai_refer_art_rg
           imageToBuild: swoaidemoregistry.azurecr.io/ref3-goal-achievement-adviser:${{ github.sha }}
           dockerfilePath: Dockerfile
-
-
+          environmentVariables: AZURE_OPENAI_SERVICE=${{ secrets.AZURE_OPENAI_SERVICE }} AZURE_OPENAI_KEY=${{ secrets.AZURE_OPENAI_KEY }} AZURE_OPENAI_CHAT_MODEL=${{ secrets.AZURE_OPENAI_CHAT_MODEL }} AZURE_OPENAI_CHAT_DEPLOYMENT=${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }} REDIS_NAME=${{ secrets.REDIS_NAME }} AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }} AZURE_STORAGE_ACCOUNT=${{ secrets.AZURE_STORAGE_ACCOUNT }} AZURE_STORAGE_KEY=${{ secrets.AZURE_STORAGE_KEY }} AZURE_STORAGE_CONTAINER=${{ secrets.AZURE_STORAGE_CONTAINER }} BASIC_AUTH_USER=${{ secrets.BASIC_AUTH_USER }} BASIC_AUTH_PASSWORD=${{ secrets.BASIC_AUTH_PASSWORD }}
