@@ -49,10 +49,11 @@ max_token = 8191 # V2
 
 # Redis
 redis_name = os.environ.get("REDIS_NAME")
-# redis_key  = os.environ.get("REDIS_KEY")
+redis_key  = os.environ.get("REDIS_KEY")
 redis_index_name = os.environ.get("REDIS_INDEX_CATEGORY") + "_" + os.environ.get("REDIS_INDEX_NAME")
-# redis_conn = StrictRedis(host=redis_name, port=10000, password=redis_key, ssl=True, ssl_cert_reqs=None, decode_responses=True)
-redis_conn = StrictRedis(host=redis_name, port=6379)
+# redis_conn = StrictRedis(host=redis_name, port=6379, password=redis_key, ssl=True, ssl_cert_reqs=None, decode_responses=True)
+redis_conn = StrictRedis(host=redis_name, port=6379, password=redis_key, decode_responses=True, ssl_cert_reqs=None)
+
 category = os.environ.get("REDIS_INDEX_CATEGORY")
 
 # Clear Redis Cache
