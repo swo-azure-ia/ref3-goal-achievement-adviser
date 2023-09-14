@@ -17,9 +17,6 @@ from task_assistant.conversation_summary import get_comversation_summary_prompt
 from task_assistant.goal_achievement_adviser import get_goal_achievement_adviser_prompt
 from task_assistant.search_info import get_internal_knowledge
 
-from flask_httpauth import HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
-
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
@@ -78,32 +75,14 @@ encoding = tiktoken.encoding_for_model("gpt-4")
 model_max_tokens = 32768 if AZURE_OPENAI_CHAT_MODEL.find("32k") > -1 else 8192
 
 app = Flask(__name__)
-auth = HTTPBasicAuth()
-
-# Basic auth user
-BASIC_AUTH_USER = os.environ.get("BASIC_AUTH_USER")
-BASIC_AUTH_PASSWORD = os.environ.get("BASIC_AUTH_PASSWORD")
-users = {
-    BASIC_AUTH_USER: generate_password_hash(BASIC_AUTH_PASSWORD)
-}
-
-
-@auth.verify_password
-def verify_password(username, password):
-    if username in users and \
-            check_password_hash(users.get(username), password):
-        return username
-
 
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
-@auth.login_required
 def static_file(path):
     return app.send_static_file(path)
 
 
 @app.route("/chat", methods=["POST"])
-@auth.login_required
 def chat():
     try:
         theme = request.json["theme"]
@@ -177,7 +156,6 @@ def chat():
 
 
 @app.route("/task/<path>")
-@auth.login_required
 def content_file(path):
     blob = blob_container.get_blob_client(path).download_blob()
     mime_type = "text/html; charset=UTF-8"
